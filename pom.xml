@@ -1,0 +1,5 @@
+
+<modules>
+    <module>spring-retry</module>
+    <module>spring-retry2</module>
+</modules>
