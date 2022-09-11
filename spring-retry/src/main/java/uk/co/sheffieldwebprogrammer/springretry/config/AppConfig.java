@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.backoff.ExponentialRandomBackOffPolicy;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
@@ -17,9 +18,12 @@ public class AppConfig {
     public RetryTemplate retryTemplate() {
         RetryTemplate retryTemplate = new RetryTemplate();
 
-        FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
-        fixedBackOffPolicy.setBackOffPeriod(2000l);
-        retryTemplate.setBackOffPolicy(fixedBackOffPolicy);
+        ExponentialRandomBackOffPolicy expRandomBackOffPolicy = new ExponentialRandomBackOffPolicy();
+        expRandomBackOffPolicy.setInitialInterval(1000);
+        expRandomBackOffPolicy.setMaxInterval(15000);
+        expRandomBackOffPolicy.setMultiplier(2);
+
+        retryTemplate.setBackOffPolicy(expRandomBackOffPolicy);
 
         SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
         retryPolicy.setMaxAttempts(10);
